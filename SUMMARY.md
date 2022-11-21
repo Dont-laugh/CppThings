@@ -1,3 +1,3 @@
 # Table of contents
 
-* [☝ C++ Style Principle](README.md)
+* [☝ C++ 代码规范](README.md)
