@@ -170,37 +170,70 @@ for (int i = 0; i < 1000000; ++i)
 
 不要在构造函数中调用虚函数。若在构造函数中调用了虚函数，它是不会重定向到子类实现的。e.g.
 
+{% code lineNumbers="true" fullWidth="false" %}
 ```cpp
+#include <iostream>
+
 class A
 {
 public:
-	A() { func(); }
-	virtual void func() { std::cout << "A::func\n"; }
+    A() { func(); }
+    virtual void func() { std::cout << "A::func\n"; }
 };
+
 class B : public A
 {
 public:
-	B() { func(); }
-	virtual void func() override { std::cout << "B::func\n"; }
+    B() { func(); }
+    virtual void func() override { std::cout << "B::func\n"; }
 };
 
 int main()
 {
-	auto b = new B();
-	delete b;
-	return 0;
+    auto b = new B();
+    std::cout << "--------\n";
+    delete b;
+    return 0;
 }
 
 // 输出：
 // A::func
 // B::func
+// --------
+// B::func
+// A::func
 ```
+{% endcode %}
 
-在 C++ 构造函数中调用虚函数的行为与 C# 相反，C# 是可以重定向到子类实现的。
+在创建子类对象时，先后调用了 `A::func` 和 `B::func`，因为构造时先进入父类构造函数，这时对象类型是 `A`，然后进入子类构造函数，这时对象类型是 `B`。析构过程则相反，先调用 `~B()` 再调用 `~A()`。
 
-### 3.2 隐式类型转换
+在 C++ 的构造和析构函数中均无法正确调用虚函数的重写版本，但是 C# 可以重定向到子类实现的。
 
-不要定义隐式类型转换。
+### 3.2 结构体 vs 类
+
+在 C++ 中 `struct` 和 `class` 关键字几乎含义一样。在实践中，结构体偏向于数据，类偏向于功能。若成员只是数据和对数据的简单操作，定义成 `struct`；若包含逻辑代码，定义成 `class`。
+
+### 3.3 继承
+
+继承一定用 public，数据成员尽量使用 private，重载的虚函数用 virtual 与 override/final 修饰。
+
+多重继承只有在一种情况下才使用：除第一个基类外，其余均为接口类。
+
+### 3.4 声明顺序
+
+将相似声明放在一起，可用 `#pragma region/endregion` 块整理，并且按访问权限顺序声明： public → protected → private。
+
+{% code lineNumbers="true" %}
+```cpp
+class PlayerState
+{
+public:
+    PlayerState();
+
+    float health;
+};
+```
+{% endcode %}
 
 
 
