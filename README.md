@@ -230,7 +230,16 @@ class PlayerState
 public:
     PlayerState();
 
+    #pragma region Getter/ Setter
+
+    inline float GetHealth() const { return health; }
+    inline float GetMana() const { return mana; }
+
+    #pragma endregion
+
+private:
     float health;
+    float mana;
 };
 ```
 {% endcode %}
