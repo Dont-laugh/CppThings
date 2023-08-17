@@ -1,6 +1,5 @@
 ---
 description: 代码规范不仅仅是技术规范，更是项目管理规范。
-layout: editorial
 ---
 
 # ☝ C++ 代码规范
@@ -207,7 +206,7 @@ int main()
 
 在创建子类对象时，先后调用了 `A::func` 和 `B::func`，因为构造时先进入父类构造函数，这时对象类型是 `A`，然后进入子类构造函数，这时对象类型是 `B`。析构过程则相反，先调用 `~B()` 再调用 `~A()`。
 
-在 C++ 的构造和析构函数中均无法正确调用虚函数的重写版本，但是 C# 可以重定向到子类实现的。
+在 C++ 的构造和析构函数中均<mark style="color:purple;">**无法正确调用虚函数的重写版本**</mark>，但是 C# 可以重定向到子类实现的。
 
 ### 3.2 结构体 vs 类
 
@@ -246,5 +245,29 @@ private:
 
 
 
+## 四、函数
 
+### 4.1 简短函数
 
+更短的函数具有更强的可读性，如果一个函数超过了 50 行，或者一个屏幕的高度显示不全，你就需要考虑是否能把它拆成更简短的函数了。
+
+### 4.2 引用参数
+
+所有的引用参数必须加上 `const`，若参数需要更改，则用指针。
+
+### 4.3 缺省参数
+
+<mark style="color:red;">**不准在虚函数中使用缺省参数！**</mark>
+
+### 4.4 返回类型后置语法
+
+在一般的函数中正常的前置语法，而在 Lambda 表达式中使用后置语法，能增强可读性，在模板中使用后置语法，能简化书写。
+
+<pre class="language-cpp" data-line-numbers><code class="lang-cpp"><strong>transform(v.begin(), v.end(), v.begin(), [](int i) -> int
+</strong><strong>{
+</strong><strong>    return i &#x3C; 0 ? -i : i;
+</strong><strong>});
+</strong><strong>
+</strong><strong>template&#x3C;class T, class U>
+</strong>auto add(T t, U u) -> decltype(t + u);
+</code></pre>
